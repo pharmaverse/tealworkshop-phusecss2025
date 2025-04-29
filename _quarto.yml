@@ -1,0 +1,32 @@
+project:
+  type: website
+
+website:
+  title: "teal-workshop-phuse-css-2025"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: shinylive.qmd
+        text: Introduction to Shinylive
+      - href: exercise_1.qmd
+        text: Exercise 1
+      - href: exercise_2.qmd
+        text: Exercise 2
+      - href: exercise_3.qmd
+        text: Exercise 3
+      - href: exercise_4.qmd
+        text: Exercise 4
+      - href: exercise_5.qmd
+        text: Exercise 5
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+
+

@@ -1,0 +1,275 @@
+---
+title: "Exercise 5"
+---
+
+Use transform module to customize outputs from modules.
+
+Reference:
+
+- ["Transform Module Output"](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html) - article describing the functionality
+
+### Code
+
+Consider a following custom module:
+
+```{r ex-module, message = FALSE}
+library(teal)
+library(teal.widgets) # optional extension for UI convinience functions
+library(teal.reporter)
+library(dplyr)
+library(ggplot2)
+
+my_custom_module_ui <- function(id, decorators) {
+  ns <- NS(id)
+
+  standard_layout(
+    output = div(fluidRow(column(
+      width = 12,
+      br(), hr(),
+      plotOutput(ns("plot"))
+    ))),
+    encoding = div(
+      simple_reporter_ui(ns("simple_reporter")),
+      br(),
+      tags$label('Encodings', class = 'text-primary'),
+      helpText('Analysis Data:', tags$code('ADSL')),
+      selectInput(
+        inputId = ns("variable"),
+        label = "Select variable",
+        choices = NULL
+      ),
+      # render decorators input (if any)
+      hr(),
+      ui_transform_teal_data(ns("decorate"), transformators = decorators),
+      hr(),
+      actionButton(
+        inputId = ns("src"),
+        label = "Show R code",
+        width = "100%"
+      )
+    )
+  )
+}
+
+my_custom_module_srv <- function(id, data, reporter, filter_panel_api, decorators) {
+  moduleServer(id, function(input, output, session) {
+
+    updateSelectInput(
+      inputId = "variable",
+      choices = data()[["ADSL"]] |> select(where(is.numeric)) |> names()
+    )
+
+    # add plot call to qenv
+    result <- reactive({
+      req(input$variable)
+      within(
+        data(),
+        {
+          my_plot <- ggplot(ADSL, aes(x = input_var)) +
+            geom_histogram()
+          my_plot
+        },
+        input_var = as.name(input$variable)
+      )
+    })
+
+    # apply decorator
+    result_decorated <- srv_transform_teal_data(
+      "decorate",
+      data = result,
+      transformators = decorators
+    )
+
+    # render to output the object from qenv
+    output$plot <- renderPlot({
+      result_decorated()[["my_plot"]]
+    })
+
+    # reproducibility
+    observeEvent(input$src, {
+      showModal(
+        ui = modalDialog(
+          title = "Reproducible R code",
+          tags$pre(
+            get_code(result_decorated())
+          )
+        ),
+        session = session
+      )
+    })
+
+    # reporter
+    simple_reporter_srv(
+      "simple_reporter",
+      reporter = reporter,
+      card_fun = function(card = TealReportCard$new(), comment) {
+        card$set_name("Histogram Plot")
+        card$append_plot(result()[["my_plot"]])
+        card$append_fs(filter_panel_api$get_filter_state())
+        card$append_encodings(list(param = input$variable))
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_src(get_code(result()))
+        card
+      }
+    )
+
+  })
+}
+
+my_custom_module <- function(label, decorators = list()) {
+  module(
+    label = label,
+    ui = my_custom_module_ui,
+    server = my_custom_module_srv,
+    ui_args = list(decorators = decorators),
+    server_args = list(decorators = decorators)
+  )
+}
+```
+
+Static (no inputs) decorator:
+```{r ex-dec-static}
+static_decorator <- teal_transform_module(
+  label = "Static decorator",
+  server = function(id, data) {
+    moduleServer(id, function(input, output, session) {
+      reactive({
+        req(data())
+        within(data(), {
+          my_plot <- my_plot +
+            ggtitle("This is a better title")
+        })
+      })
+    })
+  }
+)
+```
+
+Interactive decorator:
+```{r ex-dec-interactive}
+interactive_decorator <- teal_transform_module(
+  label = "Interactive decorator",
+  ui = function(id) {
+    ns <- NS(id)
+    div(
+      textInput(ns("plot_title"), "Plot title", value = "Awesome title")
+    )
+  },
+  server = function(id, data) {
+    moduleServer(id, function(input, output, session) {
+      reactive({
+        req(data())
+        within(data(),
+          {
+            my_plot <- my_plot +
+              ggtitle(my_title)
+            my_plot
+          },
+          my_title = input$plot_title
+        )
+      })
+    })
+  }
+)
+```
+
+Application:
+
+```{r ex-app, message = FALSE}
+data <- teal_data()
+data <- within(data, {
+  ADSL <- rADSL
+})
+
+app <- init(
+  data = data,
+  modules = list(
+    my_custom_module("no decorators"),
+    my_custom_module("static decorator", decorators = static_decorator),
+    my_custom_module("interactive decorator", decorators = interactive_decorator)
+  )
+)
+
+if (Sys.getenv("QUARTO_ROOT") == "") {
+  shinyApp(app$ui, app$server)
+}
+```
+
+```{r save_script_1, include = FALSE}
+code <- paste0(c(
+  knitr::knit_code$get("ex-module"),
+  knitr::knit_code$get("ex-dec-static"),
+  knitr::knit_code$get("ex-dec-interactive"),
+  knitr::knit_code$get("ex-app")
+), collapse = "\n")
+writeLines(code, "scripts/exercise_5_1.R")
+```
+
+```{r parse_shinylive_url_1, include = FALSE}
+url <- roxy.shinylive::create_shinylive_url(code)
+```
+
+### App
+
+```{r shinylive_iframe_1, echo = FALSE, out.width = '150%', out.extra = 'style = "position: relative; z-index:1"', purl = FALSE}
+knitr::include_url(url, height = "800px")
+```
+
+### Exercise
+
+Create a decorator for the following application using `teal.modules.general::tm_g_scatterplot()`.
+
+Please note that the final object name is `plot` - see the documentation [here](https://insightsengineering.github.io/teal.modules.general/latest-tag/reference/tm_g_scatterplot.html#decorating-module).
+
+```{r ex, message = FALSE}
+library(teal.modules.general)
+data <- teal_data() |> within(ADSL <- rADSL)
+
+app <- init(
+  data = data,
+  modules = list(
+    tm_g_scatterplot(
+      x = data_extract_spec(
+        dataname = "ADSL",
+        select = select_spec(
+          label = "Select variable:",
+          choices = variable_choices(data[["ADSL"]], "AGE"),
+          selected = "AGE"
+        )
+      ),
+      y = data_extract_spec(
+        dataname = "ADSL",
+        select = select_spec(
+          label = "Select variable:",
+          choices = variable_choices(data[["ADSL"]], "BMRKR1"),
+          selected = "BMRKR1"
+        )
+      ),
+      # Modify here!
+      decorators = list()
+    )
+  )
+)
+
+if (Sys.getenv("QUARTO_ROOT") == "") {
+  shinyApp(app$ui, app$server)
+}
+```
+
+```{r save_script_2, include = FALSE}
+code <- paste0(c(
+  knitr::knit_code$get("ex")
+), collapse = "\n")
+writeLines(code, "scripts/exercise_5_2.R")
+```
+
+```{r parse_shinylive_url_2, include = FALSE}
+url <- roxy.shinylive::create_shinylive_url(code)
+```
+
+```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+```

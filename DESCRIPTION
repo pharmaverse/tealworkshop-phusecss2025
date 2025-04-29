@@ -1,0 +1,25 @@
+Package: teal_worhshop_phusecss2025
+Type: Book
+Title: Teal Workshop for PHUSE CSS 2025
+Version: 0.1
+Authors@R:
+    person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"), comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This is not a package, but we just use this file to declare
+    the dependencies of the site.
+URL: https://github.com/pharmaverse/tealworkshop-phusecss2025
+Imports:
+    dplyr,
+    ggplot2,
+    roxy.shinylive,
+    teal,
+    teal.code,
+    teal.data,
+    teal.modules.clinical,
+    teal.modules.general,
+    teal.reporter,
+    teal.transform,
+    teal.widgets
+Suggests:
+    knitr,
+    rmarkdown
+Encoding: UTF-8

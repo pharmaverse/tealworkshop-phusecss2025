@@ -1,0 +1,26 @@
+---
+title: "teal-workshop-phuse-css-2025"
+---
+
+Welcome to the `teal` workshop on PHUSE CSS.
+
+## Packages used:
+
+[![](https://github.com/insightsengineering/hex-stickers/blob/main/PNG/teal.png?raw=true){width=150}](https://insightsengineering.github.io/teal/)
+[`teal`](https://insightsengineering.github.io/teal/) - Shiny-based interactive exploration framework for analyzing data
+
+[`teal.modules.general`](https://insightsengineering.github.io/teal.modules.general/) - General Purpose Teal Modules
+
+[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/) - Provides teal modules for the standard clinical trials outputs
+
+## Further reads:
+
+* [Getting started with `teal`](https://insightsengineering.github.io/teal/latest-tag/articles/getting-started-with-teal.html)
+
+* [`teal` Technical Blueprint](https://insightsengineering.github.io/teal/latest-tag/articles/blueprint/index.html) - for developers or advanced users
+
+* [`teal` gallery](https://insightsengineering.github.io/teal.gallery/) - A gallery of sample apps based on the `teal` framework.
+
+* [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/) - A catalog of Tables, Listings and Graphs (TLGs) created with NEST R packages
+
+* [`pharmaverse`](https://pharmaverse.org/) - Packages for clinical reporting workflows

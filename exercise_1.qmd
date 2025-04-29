@@ -1,0 +1,73 @@
+---
+title: "Exercise 1"
+---
+
+Create your first `teal` application!
+
+Reference:
+
+- [`teal::init()`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html) - the main function to create the application
+- [`teal.data::teal_data()`](https://insightsengineering.github.io/teal.data/latest-tag/reference/teal_data.html) - data input for teal application
+- [`teal::example_module()`](https://insightsengineering.github.io/teal/latest-tag/reference/example_module.html) - a dummy module
+
+### Example
+
+Using `iris` and `mtcars` datasets.
+
+```{r ex, message = FALSE}
+# load teal and all dependent packages
+library(teal)
+
+# create empty `teal_data` object
+data <- teal_data()
+
+# execute code within it
+data <- within(data, {
+  IRIS <- iris
+  MTCARS <- mtcars
+})
+
+app <- init(
+  data = data,
+  modules = list(
+    example_module()
+  )
+)
+
+if (Sys.getenv("QUARTO_ROOT") == "") {
+  shinyApp(app$ui, app$server)
+}
+```
+
+```{r save_script, include = FALSE}
+code <- paste0(knitr::knit_code$get("ex"), collapse = "\n")
+writeLines(code, "scripts/exercise_1.R")
+```
+
+```{r parse_shinylive_url, include = FALSE}
+url <- roxy.shinylive::create_shinylive_url(code)
+```
+
+### App
+
+```{r shinylive_iframe, echo = FALSE, out.width = '150%', out.extra = 'style = "position: relative; z-index:1"', purl = FALSE}
+knitr::include_url(url, height = "800px")
+```
+
+### Exercise
+
+```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+```
+
+Change the code above to use ADAM datasets. Please use following dataset(s):
+
+- `teal.data::rADSL` - a dummy ADSL dataset
+- `teal.data::rADAE` - a dummy ADAE dataset
+- `teal.data::rADTTE` - a dummy ADTTE dataset
+
+Please note these are case-sensitive and all are objects (i.e. no functions - no `()` needed).
+
+### Exercise (bonus)
+
+Please read on `teal::modify_title()`, `teal::modify_header()`, `teal::modify_footer()` [here](https://insightsengineering.github.io/teal/latest-tag/reference/teal_modifiers.html) to further customise your application.

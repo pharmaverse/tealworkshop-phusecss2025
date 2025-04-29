@@ -1,0 +1,132 @@
+---
+title: "Exercise 3"
+---
+
+Create your custom module!
+
+Create a custom module that does a simple histogram plot based on user selected columns.
+
+Reference:
+
+- [`teal::module()`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_modules.html)
+- ["Creating Custom Modules"](https://insightsengineering.github.io/teal/latest-tag/articles/creating-custom-modules.html) vignette
+- [`"qenv"`](https://insightsengineering.github.io/teal.code/latest-tag/articles/qenv.html) article on how to interact with internal `qenv` object - in particular: [`teal.code::within()`](https://insightsengineering.github.io/teal.code/latest-tag/reference/qenv.html) function
+
+### Code
+
+```{r ex, message = FALSE}
+library(teal)
+library(dplyr)
+library(ggplot2)
+
+my_custom_module_ui <- function(id) {
+  ns <- NS(id)
+  tags$div(
+    # variable selector
+    selectInput(
+      inputId = ns("variable"),
+      label = "Select variable",
+      # initialize empty - to be updated from within server
+      choices = NULL
+    ),
+    plotOutput(ns("plot"))
+  )
+}
+
+my_custom_module_srv <- function(id, data) {
+  moduleServer(id, function(input, output, session) {
+
+    # update variable selector by names of data
+    updateSelectInput(
+      inputId = "variable",
+      choices = data()[["ADSL"]] |> select(where(is.numeric)) |> names()
+    )
+
+    # add plot call to qenv
+    result <- reactive({
+      req(input$variable)
+      within(
+        data(),
+        {
+          my_plot <- ggplot(ADSL, aes(x = input_var)) +
+            geom_histogram()
+          my_plot
+        },
+        input_var = as.name(input$variable)
+      )
+    })
+
+    # render to output the object from qenv
+    output$plot <- renderPlot({
+      result()[["my_plot"]]
+    })
+
+  })
+}
+
+my_custom_module <- module(
+  label = "My Custom Module",
+  ui = my_custom_module_ui,
+  server = my_custom_module_srv
+)
+
+
+data <- teal_data()
+data <- within(data, {
+  ADSL <- rADSL
+})
+
+app <- init(
+  data = data,
+  modules = list(
+    my_custom_module
+  )
+)
+
+if (Sys.getenv("QUARTO_ROOT") == "") {
+  shinyApp(app$ui, app$server)
+}
+```
+
+```{r save_script, include = FALSE}
+code <- paste0(knitr::knit_code$get("ex"), collapse = "\n")
+writeLines(code, "scripts/exercise_3.R")
+```
+
+```{r parse_shinylive_url, include = FALSE}
+url <- roxy.shinylive::create_shinylive_url(code)
+```
+
+### App
+
+```{r shinylive_iframe, echo = FALSE, out.width = '150%', out.extra = 'style = "position: relative; z-index:1"', purl = FALSE}
+knitr::include_url(url, height = "800px")
+```
+
+### Exercise
+
+Let's enhance the module:
+
+- Let's create a new parameter `binwidth`:
+  - add a new widget to the UI
+    - that widget should be created with `shiny::sliderInput()`
+    - make reasonable values of `min`, `max`, `step` and initial `value`
+  - read and use that widget in server
+    - pass this parameter value as `binwidth` argument to the `geom_histogram()` function
+    - that argument value must be of class `symbol` - use `as.name()` in the same way as for `input$variable`
+
+- Let's add more datasets
+  - extend `data` with `ADAE = teal.data::rADAE`
+  - add a new widget in the UI
+    - that widget should be created with `shiny::selectInput()`
+    - initialize empty and update values in the same way as for `input$variable`
+  - read and use in the server
+    - modify the variable selection - it has to be chosen from the currently selected dataset
+      - convert to `observeEvent()` on `input$datasets`
+      - add at the beggining: `req(input$datasets)` to assure non empty selection
+      - modify to `choices = names(data()[[input$datasets]])`
+    - modify the observer call
+      - add `req(input$datasets)`
+      - add `req(input$variables %in% names(data()[[input$datasets]]))`
+    - modify ggplot call
+      - convert the value to a symbol and use as a first argument of `ggplot()`

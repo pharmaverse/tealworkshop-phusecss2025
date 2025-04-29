@@ -1,0 +1,93 @@
+---
+title: "Exercise 2"
+---
+
+Enhance your application with pre-built modules!
+
+Reference:
+
+- [`teal.modules.general::tm_data_table()`](https://insightsengineering.github.io/teal.modules.general/latest-tag/reference/tm_data_table.html) to create a data previewer module
+- [`teal.modules.clinical::tm_t_summary()`](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/tm_t_summary.html) to create a demographic summary table:
+  - please read the documentation - especially `arm_var` and `summarize_vars` argument and what data type it takes
+  - use both `"ARM"` and `"ARMCD"` as `arm_var`
+  - use `"SEX"`, `"AGE"` and `"RACE"` as `summarize_vars`
+
+### Example
+
+```{r ex, message = FALSE}
+library(dplyr)
+library(teal.modules.general)
+library(teal.modules.clinical)
+
+# Prepare data object
+data <- teal_data()
+data <- within(data, {
+  ADSL <- rADSL
+})
+join_keys(data) <- default_cdisc_join_keys["ADSL"]
+
+
+# Prepare module inputs
+ADSL <- data[["ADSL"]]
+
+cs_arm_var <- choices_selected(
+  choices = variable_choices(ADSL, subset = c("ARMCD", "ARM")),
+  selected = "ARM"
+)
+
+demog_vars_adsl <- ADSL |>
+  select(where(is.numeric) | where(is.factor)) |>
+  names()
+
+
+# Create app
+app <- init(
+  data = data,
+  modules = list(
+    tm_data_table("Data Table"),
+    tm_t_summary(
+      label = "Demographic Table",
+      dataname = "ADSL",
+      arm_var = cs_arm_var,
+      summarize_vars = choices_selected(
+        choices = variable_choices(ADSL, demog_vars_adsl),
+        selected = c("SEX", "AGE", "RACE")
+      )
+    )
+  )
+)
+
+if (Sys.getenv("QUARTO_ROOT") == "") {
+  shinyApp(app$ui, app$server)
+}
+```
+
+```{r save_script, include = FALSE}
+code <- paste0(knitr::knit_code$get("ex"), collapse = "\n")
+writeLines(code, "scripts/exercise_2.R")
+```
+
+```{r parse_shinylive_url, include = FALSE}
+url <- roxy.shinylive::create_shinylive_url(code)
+```
+
+### App
+
+```{r shinylive_iframe, echo = FALSE, out.width = '150%', out.extra = 'style = "position: relative; z-index:1"', purl = FALSE}
+knitr::include_url(url, height = "800px")
+```
+
+### Exercise
+
+```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+```
+
+The module output requires further tweaks:
+
+- We dont' want to have "ALL PATIENT" column - let's remove it. Please read function documentation and identify the argument to be changed.
+- It is possible to select "AGE" in the "Summarize Variables" input which does not make much sense. Let's limit the selection to only a few interesting columns of your choice. Which object to change?
+- Let's create two modules in the same application - one with "ARM" column as `arm_var` and the other with "ARMCD".
+
+### Exercise (bonus)
+- Convert module to a function and let `label` be a function parameter.

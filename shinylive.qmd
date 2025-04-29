@@ -1,0 +1,70 @@
+---
+title: "Introduction to Shinylive"
+---
+
+## What is Shinylive?
+
+Shinylive is a technology that enables Shiny applications to run entirely in a web browser without needing a separate R or Python server. It was developed by Posit (formerly RStudio) and represents a significant advancement in making interactive applications more accessible and sharable.
+
+## How Shinylive Works
+
+Shinylive uses WebAssembly to compile the R or Python runtime to run directly in the browser. This means:
+
+- Applications run entirely client-side
+- No server is required to execute the code
+- Applications can be embedded in static websites, blogs, or documentation.
+
+## R Packages in Shinylive
+
+Shinylive has access to a subset of R packages that have been compiled to WebAssembly. These packages are:
+
+- Sourced from a WebAssembly binary repository that functions as a mirror of CRAN
+- Pre-compiled specifically to work in the browser environment
+- Limited to packages that are compatible with WebAssembly constraints
+- Updated periodically to match CRAN versions, though there may be some delay
+
+When developing Shinylive applications, it's important to check if your required packages are available in the WebAssembly repository. The core tidyverse packages and many popular visualization libraries are supported, but specialized packages might not be available yet.
+
+## Examples
+
+Shinylive can be embedded directly in Quarto documents like this:
+
+````
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 400
+
+library(shiny)
+
+ui <- fluidPage(
+  h2("Hello Shinylive!"),
+  sliderInput("n", "Number of observations", 10, 100, 50),
+  plotOutput("plot")
+)
+
+server <- function(input, output, session) {
+  output$plot <- renderPlot({
+    hist(rnorm(input$n), main = "Random Normal Values")
+  })
+}
+
+shinyApp(ui, server)
+```
+````
+
+## Limitations
+
+While powerful, Shinylive does have some constraints:
+
+- Performance constraints: Browser-based execution is slower than server-based apps, with memory limits affecting dataset size and calculation speed
+
+- Package overhead: Each package must be downloaded separately for every WebR instance, increasing load times and bandwidth usage
+
+- Limited package availability: Not all CRAN packages are available in the WebAssembly environment
+
+- Resource limitations: Browser constraints impact complex applications and large datasets
+
+Best suited for simpler applications with minimal dependencies, particularly when bandwidth may be limited.
+
+Check out the [official documentation](https://shiny.posit.co/py/docs/shinylive.html) for more details.
+
