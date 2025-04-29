@@ -19,6 +19,10 @@ website:
         text: Exercise 4
       - href: exercise_5.qmd
         text: Exercise 5
+    right:
+      - icon: github
+        href: https://github.com/
+        aria-label: GitHub
 
 format:
   html:

@@ -105,6 +105,10 @@ knitr::include_url(url, height = "800px")
 
 ### Exercise
 
+```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+```
+
 Let's enhance the module:
 
 - Let's create a new parameter `binwidth`:
@@ -130,3 +134,6 @@ Let's enhance the module:
       - add `req(input$variables %in% names(data()[[input$datasets]]))`
     - modify ggplot call
       - convert the value to a symbol and use as a first argument of `ggplot()`
+
+### Exercise (bonus)
+- Convert module to a function and let `label` be a function parameter.

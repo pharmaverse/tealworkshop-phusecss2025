@@ -4,7 +4,7 @@ library(teal.reporter)
 library(dplyr)
 library(ggplot2)
 
-my_custom_module_ui <- function(id, decorators) {
+my_custom_module_ui <- function(id) {
   ns <- NS(id)
 
   standard_layout(
@@ -14,6 +14,7 @@ my_custom_module_ui <- function(id, decorators) {
       plotOutput(ns("plot"))
     ))),
     encoding = div(
+      # Reporter buttons
       simple_reporter_ui(ns("simple_reporter")),
       br(),
       tags$label('Encodings', class = 'text-primary'),
@@ -23,10 +24,8 @@ my_custom_module_ui <- function(id, decorators) {
         label = "Select variable",
         choices = NULL
       ),
-      # render decorators input (if any)
       hr(),
-      ui_transform_teal_data(ns("decorate"), transformators = decorators),
-      hr(),
+      # Show R Code buttom
       actionButton(
         inputId = ns("src"),
         label = "Show R code",
@@ -36,9 +35,10 @@ my_custom_module_ui <- function(id, decorators) {
   )
 }
 
-my_custom_module_srv <- function(id, data, reporter, filter_panel_api, decorators) {
+my_custom_module_srv <- function(id, data, reporter, filter_panel_api) {
   moduleServer(id, function(input, output, session) {
 
+    # update variable selector by names of data
     updateSelectInput(
       inputId = "variable",
       choices = data()[["ADSL"]] |> select(where(is.numeric)) |> names()
@@ -58,16 +58,9 @@ my_custom_module_srv <- function(id, data, reporter, filter_panel_api, decorator
       )
     })
 
-    # apply decorator
-    result_decorated <- srv_transform_teal_data(
-      "decorate",
-      data = result,
-      transformators = decorators
-    )
-
     # render to output the object from qenv
     output$plot <- renderPlot({
-      result_decorated()[["my_plot"]]
+      result()[["my_plot"]]
     })
 
     # reproducibility
@@ -76,7 +69,7 @@ my_custom_module_srv <- function(id, data, reporter, filter_panel_api, decorator
         ui = modalDialog(
           title = "Reproducible R code",
           tags$pre(
-            get_code(result_decorated())
+            get_code(result())
           )
         ),
         session = session
@@ -104,53 +97,13 @@ my_custom_module_srv <- function(id, data, reporter, filter_panel_api, decorator
   })
 }
 
-my_custom_module <- function(label, decorators = list()) {
-  module(
-    label = label,
-    ui = my_custom_module_ui,
-    server = my_custom_module_srv,
-    ui_args = list(decorators = decorators),
-    server_args = list(decorators = decorators)
-  )
-}
-static_decorator <- teal_transform_module(
-  label = "Static decorator",
-  server = function(id, data) {
-    moduleServer(id, function(input, output, session) {
-      reactive({
-        req(data())
-        within(data(), {
-          my_plot <- my_plot +
-            ggtitle("This is a better title")
-        })
-      })
-    })
-  }
+my_custom_module <- module(
+  label = "My Custom Module",
+  ui = my_custom_module_ui,
+  server = my_custom_module_srv
 )
-interactive_decorator <- teal_transform_module(
-  label = "Interactive decorator",
-  ui = function(id) {
-    ns <- NS(id)
-    div(
-      textInput(ns("plot_title"), "Plot title", value = "Awesome title")
-    )
-  },
-  server = function(id, data) {
-    moduleServer(id, function(input, output, session) {
-      reactive({
-        req(data())
-        within(data(),
-          {
-            my_plot <- my_plot +
-              ggtitle(my_title)
-            my_plot
-          },
-          my_title = input$plot_title
-        )
-      })
-    })
-  }
-)
+
+
 data <- teal_data()
 data <- within(data, {
   ADSL <- rADSL
@@ -159,9 +112,7 @@ data <- within(data, {
 app <- init(
   data = data,
   modules = list(
-    my_custom_module("no decorators"),
-    my_custom_module("static decorator", decorators = static_decorator),
-    my_custom_module("interactive decorator", decorators = interactive_decorator)
+    my_custom_module
   )
 )
 

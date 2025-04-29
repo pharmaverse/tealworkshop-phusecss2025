@@ -88,6 +88,3 @@ The module output requires further tweaks:
 - We dont' want to have "ALL PATIENT" column - let's remove it. Please read function documentation and identify the argument to be changed.
 - It is possible to select "AGE" in the "Summarize Variables" input which does not make much sense. Let's limit the selection to only a few interesting columns of your choice. Which object to change?
 - Let's create two modules in the same application - one with "ARM" column as `arm_var` and the other with "ARMCD".
-
-### Exercise (bonus)
-- Convert module to a function and let `label` be a function parameter.
