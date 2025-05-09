@@ -1,1 +1,3 @@
-source("renv/activate.R")
+if (Sys.getenv("QUARTO_ROOT") == "") {
+    source("renv/activate.R")
+}
