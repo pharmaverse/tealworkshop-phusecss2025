@@ -69,6 +69,7 @@ writeLines(code, "scripts/exercise_2.R")
 
 ```{r parse_shinylive_url, include = FALSE}
 url <- roxy.shinylive::create_shinylive_url(code)
+url_editor <- roxy.shinylive::create_shinylive_url(code, mode = "editor")
 ```
 
 ### App
@@ -80,11 +81,56 @@ knitr::include_url(url, height = "800px")
 ### Exercise
 
 ```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
-cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url_editor))
 ```
 
 The module output requires further tweaks:
 
 - We dont' want to have "ALL PATIENT" column - let's remove it. Please read function documentation and identify the argument to be changed.
-- It is possible to select "AGE" in the "Summarize Variables" input which does not make much sense. Let's limit the selection to only a few interesting columns of your choice. Which object to change?
+
+  ::: {.callout-tip collapse="true"}
+  ## Answer
+
+  ```{r, eval = FALSE}
+  tm_t_summary(
+    ...,
+    add_total = FALSE
+  )
+  ```
+  :::
+
+- It is possible to select "ARM" in the "Summarize Variables" input which does not make much sense. Let's limit the selection to only a few interesting columns of your choice. Which object to change?
+
+  ::: {.callout-tip collapse="true"}
+  ## Answer
+
+  ```{r, eval = FALSE}
+  # explicit
+  demog_vars_adsl <- c("AGE", "SEX", "RACE", ...)
+  # alternatively: exclude
+  demog_vars_adsl <- ... |> setdiff(c("AGE", ...))
+  ```
+  :::
+
 - Let's create two modules in the same application - one with "ARM" column as `arm_var` and the other with "ARMCD".
+
+  ::: {.callout-tip collapse="true"}
+  ## Answer
+
+  ```{r, eval = FALSE}
+  app <- init(
+    ...
+    modules = list(
+      ...,
+      tm_t_summary(
+        ...,
+        arm_var = choices_selected("ARM", "ARM", fixed = TRUE)
+      ),
+      tm_t_summary(
+        ...,
+        arm_var = choices_selected("ARMCD", "ARMCD", fixed = TRUE)
+      )
+    )
+  )
+  ```
+  :::

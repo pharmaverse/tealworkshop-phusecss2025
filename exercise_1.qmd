@@ -46,6 +46,7 @@ writeLines(code, "scripts/exercise_1.R")
 
 ```{r parse_shinylive_url, include = FALSE}
 url <- roxy.shinylive::create_shinylive_url(code)
+url_editor <- roxy.shinylive::create_shinylive_url(code, mode = "editor")
 ```
 
 ### App
@@ -57,7 +58,7 @@ knitr::include_url(url, height = "800px")
 ### Exercise
 
 ```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
-cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url_editor))
 ```
 
 Change the code above to use ADAM datasets. Please use following dataset(s):
@@ -68,6 +69,34 @@ Change the code above to use ADAM datasets. Please use following dataset(s):
 
 Please note these are case-sensitive and all are objects (i.e. no functions - no `()` needed).
 
+::: {.callout-tip collapse="true"}
+## Answer
+
+```{r, eval = FALSE}
+data <- within(data, {
+  ADSL <- teal.data::rADSL
+  ADAE <- teal.data::rADAE
+  ADTTE <- teal.data::rADTTE
+})
+```
+:::
+
 ### Exercise (bonus)
 
 Please read on `teal::modify_title()`, `teal::modify_header()`, `teal::modify_footer()` [here](https://insightsengineering.github.io/teal/latest-tag/reference/teal_modifiers.html) to further customise your application.
+
+::: {.callout-tip collapse="true"}
+## Answer
+
+```{r, eval = FALSE}
+app <- init(
+  data = data,
+  modules = list(
+    example_module()
+  )
+) |>
+  modify_title("My new title") |>
+  modify_header("My new header") |>
+  modify_footer("My new footer")
+```
+:::

@@ -210,6 +210,7 @@ writeLines(code, "scripts/exercise_5_1.R")
 
 ```{r parse_shinylive_url_1, include = FALSE}
 url <- roxy.shinylive::create_shinylive_url(code)
+url_editor <- roxy.shinylive::create_shinylive_url(code, mode = "editor")
 ```
 
 ### App
@@ -268,8 +269,42 @@ writeLines(code, "scripts/exercise_5_2.R")
 
 ```{r parse_shinylive_url_2, include = FALSE}
 url <- roxy.shinylive::create_shinylive_url(code)
+url_editor <- roxy.shinylive::create_shinylive_url(code, mode = "editor")
 ```
 
 ```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
-cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url_editor))
 ```
+
+::: {.callout-tip collapse="true"}
+## Answer
+
+```{r, eval = FALSE}
+decorators = list(
+  plot = teal_transform_module(
+    label = "Custom decorations",
+    ui = function(id) {
+      ns <- NS(id)
+      div(
+        textInput(ns("plot_title"), "Plot title", value = "Awesome title")
+      )
+    },
+    server = function(id, data) {
+      moduleServer(id, function(input, output, session) {
+        reactive({
+          req(data())
+          within(data(),
+            {
+              plot <- plot +
+                ggtitle(my_title)
+              plot
+            },
+            my_title = input$plot_title
+          )
+        })
+      })
+    }
+  )
+)
+```
+:::

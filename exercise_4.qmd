@@ -145,6 +145,7 @@ writeLines(code, "scripts/exercise_4.R")
 
 ```{r parse_shinylive_url, include = FALSE}
 url <- roxy.shinylive::create_shinylive_url(code)
+url_editor <- roxy.shinylive::create_shinylive_url(code, mode = "editor")
 ```
 
 ### App

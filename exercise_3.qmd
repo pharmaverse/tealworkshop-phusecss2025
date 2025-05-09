@@ -95,6 +95,7 @@ writeLines(code, "scripts/exercise_3.R")
 
 ```{r parse_shinylive_url, include = FALSE}
 url <- roxy.shinylive::create_shinylive_url(code)
+url_editor <- roxy.shinylive::create_shinylive_url(code, mode = "editor")
 ```
 
 ### App
@@ -106,7 +107,7 @@ knitr::include_url(url, height = "800px")
 ### Exercise
 
 ```{r shinylive_link, echo = FALSE, results = 'asis', purl = FALSE}
-cat(sprintf("[Open editor in Shinylive](%s)\n\n", url))
+cat(sprintf("[Open editor in Shinylive](%s)\n\n", url_editor))
 ```
 
 Let's enhance the module:
@@ -117,7 +118,55 @@ Let's enhance the module:
     - make reasonable values of `min`, `max`, `step` and initial `value`
   - read and use that widget in server
     - pass this parameter value as `binwidth` argument to the `geom_histogram()` function
-    - that argument value must be of class `symbol` - use `as.name()` in the same way as for `input$variable`
+
+  ::: {.callout-tip collapse="true"}
+  ## Answer
+
+  ```{r, eval = FALSE}
+  my_custom_module_ui <- function(id) {
+    ...
+    tags$div(
+      ...,
+      sliderInput(
+        inputId = ns("binwidth"),
+        label = "binwidth",
+        min = 1,
+        max = 10,
+        step = 1,
+        value = 3
+      ),
+      ...
+    )
+  }
+  ```
+
+  ```{r, eval = FALSE}
+  my_custom_module_srv <- function(id, data) {
+    moduleServer(id, function(input, output, session) {
+
+      ...
+
+      # add plot call to qenv
+      result <- reactive({
+        req(input$variable)
+        within(
+          data(),
+          {
+            my_plot <- ggplot(ADSL, aes(x = input_var)) +
+              geom_histogram(binwidth = input_binwidth)
+            my_plot
+          },
+          input_var = as.name(input$variable),
+          input_binwidth = input$binwidth
+        )
+      })
+
+      ...
+
+    })
+  }
+  ```
+  :::
 
 - Let's add more datasets
   - extend `data` with `ADAE = teal.data::rADAE`
@@ -126,14 +175,83 @@ Let's enhance the module:
     - initialize empty and update values in the same way as for `input$variable`
   - read and use in the server
     - modify the variable selection - it has to be chosen from the currently selected dataset
-      - convert to `observeEvent()` on `input$datasets`
-      - add at the beggining: `req(input$datasets)` to assure non empty selection
-      - modify to `choices = names(data()[[input$datasets]])`
+      - convert to `observeEvent()` on `input$dataset`
+      - add at the beggining: `req(input$dataset)` to assure non empty selection
+      - modify to `choices = names(data()[[input$dataset]])`
     - modify the observer call
-      - add `req(input$datasets)`
-      - add `req(input$variables %in% names(data()[[input$datasets]]))`
+      - add `req(input$dataset)`
+      - add `req(input$variables %in% names(data()[[input$dataset]]))`
     - modify ggplot call
       - convert the value to a symbol and use as a first argument of `ggplot()`
+
+  ::: {.callout-tip collapse="true"}
+  ## Answer
+
+  ```{r, eval = FALSE}
+  data <- within(data, {
+    ADSL <- rADSL
+    ADAE <- teal.data::rADAE
+  })
+  ```
+
+  ```{r, eval = FALSE}
+  my_custom_module_ui <- function(id) {
+    ns <- NS(id)
+    tags$div(
+      # dataset selector
+      selectInput(
+        inputId = ns("dataset"),
+        label = "Select dataset",
+        choices = NULL
+      ),
+      ...
+    )
+  }
+  ```
+
+  ```{r, eval = FALSE}
+  my_custom_module_srv <- function(id, data) {
+    moduleServer(id, function(input, output, session) {
+
+      updateSelectInput(
+        inputId = "dataset",
+        choices = names(data())
+      )
+
+      observeEvent(
+        input$dataset,
+        {
+          req(input$dataset)
+          updateSelectInput(
+            inputId = "variable",
+            choices = data()[[input$dataset]] |> select(where(is.numeric)) |> names()
+          )
+        }
+      )
+
+      result <- reactive({
+        req(input$dataset)
+        req(input$variable)
+        within(
+          data(),
+          {
+            my_plot <- ggplot(input_dataset, aes(x = input_var)) +
+              geom_histogram()
+            my_plot
+          },
+          input_dataset = as.name(input$dataset),
+          input_var = as.name(input$variable)
+        )
+      })
+
+      output$plot <- renderPlot({
+        result()[["my_plot"]]
+      })
+
+    })
+  }
+  ```
+  :::
 
 ### Exercise (bonus)
 - Convert module to a function and let `label` be a function parameter.
