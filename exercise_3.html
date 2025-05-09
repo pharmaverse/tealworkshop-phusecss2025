@@ -215,77 +215,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="code" class="level3">
 <h3 class="anchored" data-anchor-id="code">Code</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(teal)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>my_custom_module_ui <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  ns <span class="ot">&lt;-</span> <span class="fu">NS</span>(id)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  tags<span class="sc">$</span><span class="fu">div</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># variable selector</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">selectInput</span>(</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">inputId =</span> <span class="fu">ns</span>(<span class="st">"variable"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="st">"Select variable"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># initialize empty - to be updated from within server</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">choices =</span> <span class="cn">NULL</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plotOutput</span>(<span class="fu">ns</span>(<span class="st">"plot"</span>))</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>my_custom_module_srv <span class="ot">&lt;-</span> <span class="cf">function</span>(id, data) {</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moduleServer</span>(id, <span class="cf">function</span>(input, output, session) {</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update variable selector by names of data</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateSelectInput</span>(</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">inputId =</span> <span class="st">"variable"</span>,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">choices =</span> <span class="fu">data</span>()[[<span class="st">"ADSL"</span>]] <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add plot call to qenv</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    result <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">req</span>(input<span class="sc">$</span>variable)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">within</span>(</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">data</span>(),</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>          my_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(ADSL, <span class="fu">aes</span>(<span class="at">x =</span> input_var)) <span class="sc">+</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>            <span class="fu">geom_histogram</span>()</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>          my_plot</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        <span class="at">input_var =</span> <span class="fu">as.name</span>(input<span class="sc">$</span>variable)</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># render to output the object from qenv</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    output<span class="sc">$</span>plot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">result</span>()[[<span class="st">"my_plot"</span>]]</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>my_custom_module <span class="ot">&lt;-</span> <span class="fu">module</span>(</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">label =</span> <span class="st">"My Custom Module"</span>,</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">ui =</span> my_custom_module_ui,</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">server =</span> my_custom_module_srv</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">teal_data</span>()</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">within</span>(data, {</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  ADSL <span class="ot">&lt;-</span> rADSL</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>app <span class="ot">&lt;-</span> <span class="fu">init</span>(</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data,</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">modules =</span> <span class="fu">list</span>(</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    my_custom_module</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">Sys.getenv</span>(<span class="st">"QUARTO_ROOT"</span>) <span class="sc">==</span> <span class="st">""</span>) {</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shinyApp</span>(app<span class="sc">$</span>ui, app<span class="sc">$</span>server)</span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(teal)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>my_custom_module_ui <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
+<span id="cb1-6"><a href="#cb1-6"></a>  ns <span class="ot">&lt;-</span> <span class="fu">NS</span>(id)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  tags<span class="sc">$</span><span class="fu">div</span>(</span>
+<span id="cb1-8"><a href="#cb1-8"></a>    <span class="co"># variable selector</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="fu">selectInput</span>(</span>
+<span id="cb1-10"><a href="#cb1-10"></a>      <span class="at">inputId =</span> <span class="fu">ns</span>(<span class="st">"variable"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11"></a>      <span class="at">label =</span> <span class="st">"Select variable"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12"></a>      <span class="co"># initialize empty - to be updated from within server</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>      <span class="at">choices =</span> <span class="cn">NULL</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>    ),</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    <span class="fu">plotOutput</span>(<span class="fu">ns</span>(<span class="st">"plot"</span>))</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  )</span>
+<span id="cb1-17"><a href="#cb1-17"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a>my_custom_module_srv <span class="ot">&lt;-</span> <span class="cf">function</span>(id, data) {</span>
+<span id="cb1-20"><a href="#cb1-20"></a>  <span class="fu">moduleServer</span>(id, <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a>    <span class="co"># update variable selector by names of data</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a>    <span class="fu">updateSelectInput</span>(</span>
+<span id="cb1-24"><a href="#cb1-24"></a>      <span class="at">inputId =</span> <span class="st">"variable"</span>,</span>
+<span id="cb1-25"><a href="#cb1-25"></a>      <span class="at">choices =</span> <span class="fu">data</span>()[[<span class="st">"ADSL"</span>]] <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb1-26"><a href="#cb1-26"></a>    )</span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a>    <span class="co"># add plot call to qenv</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a>    result <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb1-30"><a href="#cb1-30"></a>      <span class="fu">req</span>(input<span class="sc">$</span>variable)</span>
+<span id="cb1-31"><a href="#cb1-31"></a>      <span class="fu">within</span>(</span>
+<span id="cb1-32"><a href="#cb1-32"></a>        <span class="fu">data</span>(),</span>
+<span id="cb1-33"><a href="#cb1-33"></a>        {</span>
+<span id="cb1-34"><a href="#cb1-34"></a>          my_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(ADSL, <span class="fu">aes</span>(<span class="at">x =</span> input_var)) <span class="sc">+</span></span>
+<span id="cb1-35"><a href="#cb1-35"></a>            <span class="fu">geom_histogram</span>()</span>
+<span id="cb1-36"><a href="#cb1-36"></a>          my_plot</span>
+<span id="cb1-37"><a href="#cb1-37"></a>        },</span>
+<span id="cb1-38"><a href="#cb1-38"></a>        <span class="at">input_var =</span> <span class="fu">as.name</span>(input<span class="sc">$</span>variable)</span>
+<span id="cb1-39"><a href="#cb1-39"></a>      )</span>
+<span id="cb1-40"><a href="#cb1-40"></a>    })</span>
+<span id="cb1-41"><a href="#cb1-41"></a></span>
+<span id="cb1-42"><a href="#cb1-42"></a>    <span class="co"># render to output the object from qenv</span></span>
+<span id="cb1-43"><a href="#cb1-43"></a>    output<span class="sc">$</span>plot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb1-44"><a href="#cb1-44"></a>      <span class="fu">result</span>()[[<span class="st">"my_plot"</span>]]</span>
+<span id="cb1-45"><a href="#cb1-45"></a>    })</span>
+<span id="cb1-46"><a href="#cb1-46"></a></span>
+<span id="cb1-47"><a href="#cb1-47"></a>  })</span>
+<span id="cb1-48"><a href="#cb1-48"></a>}</span>
+<span id="cb1-49"><a href="#cb1-49"></a></span>
+<span id="cb1-50"><a href="#cb1-50"></a>my_custom_module <span class="ot">&lt;-</span> <span class="fu">module</span>(</span>
+<span id="cb1-51"><a href="#cb1-51"></a>  <span class="at">label =</span> <span class="st">"My Custom Module"</span>,</span>
+<span id="cb1-52"><a href="#cb1-52"></a>  <span class="at">ui =</span> my_custom_module_ui,</span>
+<span id="cb1-53"><a href="#cb1-53"></a>  <span class="at">server =</span> my_custom_module_srv</span>
+<span id="cb1-54"><a href="#cb1-54"></a>)</span>
+<span id="cb1-55"><a href="#cb1-55"></a></span>
+<span id="cb1-56"><a href="#cb1-56"></a></span>
+<span id="cb1-57"><a href="#cb1-57"></a>data <span class="ot">&lt;-</span> <span class="fu">teal_data</span>()</span>
+<span id="cb1-58"><a href="#cb1-58"></a>data <span class="ot">&lt;-</span> <span class="fu">within</span>(data, {</span>
+<span id="cb1-59"><a href="#cb1-59"></a>  ADSL <span class="ot">&lt;-</span> rADSL</span>
+<span id="cb1-60"><a href="#cb1-60"></a>})</span>
+<span id="cb1-61"><a href="#cb1-61"></a></span>
+<span id="cb1-62"><a href="#cb1-62"></a>app <span class="ot">&lt;-</span> <span class="fu">init</span>(</span>
+<span id="cb1-63"><a href="#cb1-63"></a>  <span class="at">data =</span> data,</span>
+<span id="cb1-64"><a href="#cb1-64"></a>  <span class="at">modules =</span> <span class="fu">list</span>(</span>
+<span id="cb1-65"><a href="#cb1-65"></a>    my_custom_module</span>
+<span id="cb1-66"><a href="#cb1-66"></a>  )</span>
+<span id="cb1-67"><a href="#cb1-67"></a>)</span>
+<span id="cb1-68"><a href="#cb1-68"></a></span>
+<span id="cb1-69"><a href="#cb1-69"></a><span class="cf">if</span> (<span class="fu">Sys.getenv</span>(<span class="st">"QUARTO_ROOT"</span>) <span class="sc">==</span> <span class="st">""</span>) {</span>
+<span id="cb1-70"><a href="#cb1-70"></a>  <span class="fu">shinyApp</span>(app<span class="sc">$</span>ui, app<span class="sc">$</span>server)</span>
+<span id="cb1-71"><a href="#cb1-71"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="app" class="level3">
@@ -297,7 +297,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="exercise" class="level3">
 <h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
-<p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqagSgB0IdJiw4ATVNVaN+ghszbsA5oolFSAJhkCYrAPoEArgGdSRGLphFRB6nF0HaAAgA8AWkcAzAxAKlaJdlpRHkcQAUdHCCMXdwA5AGVA4PDHUihFIwASUVoAN3YUiIBiR1yWWih6W0cjOFtfIkZCmrq4XwBJCFQDUgKICIHHWi6e9tFHAF5IowKwMsYKqrg+MB5cZojqSrrJxxX41t9S8srbFfX+wccS4do-bloALzhHOBhUUlZHd1NHeheDKhRFByOMPIwzI4AO53AAWwxajFycCal0GBFhRFoBDg0SmsQAqgAZInNNbNVSkADyPW6vSis0pKx4MgiMgAvgJtHpDCYzBYrDY7EYkTFPN5fP4IElcI5gWkQmFLpZrLYDkiUTLxT4-AFhnTZURaT1ZbUjEYpYquWjro5AfKXvNFtVavVTIw-l9oPBokQPHKQVBmvaQXADm7OnS+lchiNSGNdisnadlngNo4MVicXiA2l2DxgMAVgBBAAi8VJYAAulXHAAfAB8LTd7ChsJRcECRgwEAM8AWBBZ9ab3tx+bJ1sGJSgonGlIz3GoqSIjgAjhRcs1GLibKQxduoJLkewlTHt6vAnHMsmlqyrjDSPDpemIvKoPmLjGIqevxEdLp5zcRxlEpdgywrWUoDHAAPXZ9R6XR5iHABqF8rkUOB+XhPlFGYGBxxtGN-yZQiBnZT8v3g0hEJYXYoG7UdLzpa8TlvdM7widktBtEptwgUQUWXRwjVIOlUnbYT6AAKzaPdwUhdcIE3G0ROYwD3D4gTGAABWoNQT3TbcjF3fNCxWYi9NIFYa2aLjJ0cOyIE5CBuX0YxTHMFUhTFLzbGjRwtn+JcphWABZL4AGF3MhULBTONNLgcXZ-15DyBVVOwHAo2oNQ9KYUuizy4uFJEBG4gQ3zFLhqF0N8CMqoCHyfdg31lH9wKJfcOoERyBDQVAxVuXoUkqqZWpSXzcV2OgTH8v8eUK9KhRSGRuNof12HiVhuww8glNmABFAliywAAVKldCwKkqVO5lJhCsA7p-Iwn1YYt0HYfrMiyxwvpy5FpB6sB2SrIA">Open editor in Shinylive</a></p>
+<p><a href="https://shinylive.io/r/editor/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqagSgB0IdJiw4ATVNVaN+ghszbsA5oolFSAJhkCYrAPoEArgGdSRGLphFRB6nF0HaAAgA8AWkcAzAxAKlaJdlpRHkcQAUdHCCMXdwA5AGVA4PDHUihFIwASUVoAN3YUiIBiR1yWWih6W0cjOFtfIkZCmrq4XwBJCFQDUgKICIHHWi6e9tFHAF5IowKwMsYKqrg+MB5cZojqSrrJxxX41t9S8srbFfX+wccS4do-bloALzhHOBhUUlZHd1NHeheDKhRFByOMPIwzI4AO53AAWwxajFycCal0GBFhRFoBDg0SmsQAqgAZInNNbNVSkADyPW6vSis0pKx4MgiMgAvgJtHpDCYzBYrDY7EYkTFPN5fP4IElcI5gWkQmFLpZrLYDkiUTLxT4-AFhnTZURaT1ZbUjEYpYquWjro5AfKXvNFtVavVTIw-l9oPBokQPHKQVBmvaQXADm7OnS+lchiNSGNdisnadlngNo4MVicXiA2l2DxgMAVgBBAAi8VJYAAulXHAAfAB8LTd7ChsJRcECRgwEAM8AWBBZ9ab3tx+bJ1sGJSgonGlIz3GoqSIjgAjhRcs1GLibKQxduoJLkewlTHt6vAnHMsmlqyrjDSPDpemIvKoPmLjGIqevxEdLp5zcRxlEpdgywrWUoDHAAPXZ9R6XR5iHABqF8rkUOB+XhPlFGYGBxxtGN-yZQiBnZT8v3g0hEJYXYoG7UdLzpa8TlvdM7widktBtEptwgUQUWXRwjVIOlUnbYT6AAKzaPdwUhdcIE3G0ROYwD3D4gTGAABWoNQT3TbcjF3fNCxWYi9NIFYa2aLjJ0cOyIE5CBuX0YxTHMFUhTFLzbGjRwtn+JcphWABZL4AGF3MhULBTONNLgcXZ-15DyBVVOwHAo2oNQ9KYUuizy4uFJEBG4gQ3zFLhqF0N8CMqoCHyfdg31lH9wKJfcOoERyBDQVAxVuXoUkqqZWpSXzcV2OgTH8v8eUK9KhRSGRuNof12HiVhuww8glNmABFAliywAAVKldCwKkqVO5lJhCsA7p-Iwn1YYt0HYfrMiyxwvpy5FpB6sB2SrIA">Open editor in Shinylive</a></p>
 <p>Let’s enhance the module:</p>
 <ul>
 <li>Let’s create a new parameter <code>binwidth</code>:
@@ -310,9 +310,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>read and use that widget in server
 <ul>
 <li>pass this parameter value as <code>binwidth</code> argument to the <code>geom_histogram()</code> function</li>
-<li>that argument value must be of class <code>symbol</code> - use <code>as.name()</code> in the same way as for <code>input$variable</code></li>
 </ul></li>
-</ul></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>my_custom_module_ui <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  ...</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  tags<span class="sc">$</span><span class="fu">div</span>(</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    ...,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="fu">sliderInput</span>(</span>
+<span id="cb2-6"><a href="#cb2-6"></a>      <span class="at">inputId =</span> <span class="fu">ns</span>(<span class="st">"binwidth"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7"></a>      <span class="at">label =</span> <span class="st">"binwidth"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8"></a>      <span class="at">min =</span> <span class="dv">1</span>,</span>
+<span id="cb2-9"><a href="#cb2-9"></a>      <span class="at">max =</span> <span class="dv">10</span>,</span>
+<span id="cb2-10"><a href="#cb2-10"></a>      <span class="at">step =</span> <span class="dv">1</span>,</span>
+<span id="cb2-11"><a href="#cb2-11"></a>      <span class="at">value =</span> <span class="dv">3</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>    ),</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    ...</span>
+<span id="cb2-14"><a href="#cb2-14"></a>  )</span>
+<span id="cb2-15"><a href="#cb2-15"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>my_custom_module_srv <span class="ot">&lt;-</span> <span class="cf">function</span>(id, data) {</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">moduleServer</span>(id, <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>    ...</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="co"># add plot call to qenv</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>    result <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb3-8"><a href="#cb3-8"></a>      <span class="fu">req</span>(input<span class="sc">$</span>variable)</span>
+<span id="cb3-9"><a href="#cb3-9"></a>      <span class="fu">within</span>(</span>
+<span id="cb3-10"><a href="#cb3-10"></a>        <span class="fu">data</span>(),</span>
+<span id="cb3-11"><a href="#cb3-11"></a>        {</span>
+<span id="cb3-12"><a href="#cb3-12"></a>          my_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(ADSL, <span class="fu">aes</span>(<span class="at">x =</span> input_var)) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>            <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> input_binwidth)</span>
+<span id="cb3-14"><a href="#cb3-14"></a>          my_plot</span>
+<span id="cb3-15"><a href="#cb3-15"></a>        },</span>
+<span id="cb3-16"><a href="#cb3-16"></a>        <span class="at">input_var =</span> <span class="fu">as.name</span>(input<span class="sc">$</span>variable),</span>
+<span id="cb3-17"><a href="#cb3-17"></a>        <span class="at">input_binwidth =</span> input<span class="sc">$</span>binwidth</span>
+<span id="cb3-18"><a href="#cb3-18"></a>      )</span>
+<span id="cb3-19"><a href="#cb3-19"></a>    })</span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a>    ...</span>
+<span id="cb3-22"><a href="#cb3-22"></a></span>
+<span id="cb3-23"><a href="#cb3-23"></a>  })</span>
+<span id="cb3-24"><a href="#cb3-24"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div></li>
 <li>Let’s add more datasets
 <ul>
 <li>extend <code>data</code> with <code>ADAE = teal.data::rADAE</code></li>
@@ -325,21 +382,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>modify the variable selection - it has to be chosen from the currently selected dataset
 <ul>
-<li>convert to <code>observeEvent()</code> on <code>input$datasets</code></li>
-<li>add at the beggining: <code>req(input$datasets)</code> to assure non empty selection</li>
-<li>modify to <code>choices = names(data()[[input$datasets]])</code></li>
+<li>convert to <code>observeEvent()</code> on <code>input$dataset</code></li>
+<li>add at the beggining: <code>req(input$dataset)</code> to assure non empty selection</li>
+<li>modify to <code>choices = names(data()[[input$dataset]])</code></li>
 </ul></li>
 <li>modify the observer call
 <ul>
-<li>add <code>req(input$datasets)</code></li>
-<li>add <code>req(input$variables %in% names(data()[[input$datasets]]))</code></li>
+<li>add <code>req(input$dataset)</code></li>
+<li>add <code>req(input$variables %in% names(data()[[input$dataset]]))</code></li>
 </ul></li>
 <li>modify ggplot call
 <ul>
 <li>convert the value to a symbol and use as a first argument of <code>ggplot()</code></li>
 </ul></li>
 </ul></li>
-</ul></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>data <span class="ot">&lt;-</span> <span class="fu">within</span>(data, {</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  ADSL <span class="ot">&lt;-</span> rADSL</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  ADAE <span class="ot">&lt;-</span> teal.data<span class="sc">::</span>rADAE</span>
+<span id="cb4-4"><a href="#cb4-4"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>my_custom_module_ui <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  ns <span class="ot">&lt;-</span> <span class="fu">NS</span>(id)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  tags<span class="sc">$</span><span class="fu">div</span>(</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="co"># dataset selector</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>    <span class="fu">selectInput</span>(</span>
+<span id="cb5-6"><a href="#cb5-6"></a>      <span class="at">inputId =</span> <span class="fu">ns</span>(<span class="st">"dataset"</span>),</span>
+<span id="cb5-7"><a href="#cb5-7"></a>      <span class="at">label =</span> <span class="st">"Select dataset"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>      <span class="at">choices =</span> <span class="cn">NULL</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>    ),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    ...</span>
+<span id="cb5-11"><a href="#cb5-11"></a>  )</span>
+<span id="cb5-12"><a href="#cb5-12"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>my_custom_module_srv <span class="ot">&lt;-</span> <span class="cf">function</span>(id, data) {</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">moduleServer</span>(id, <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="fu">updateSelectInput</span>(</span>
+<span id="cb6-5"><a href="#cb6-5"></a>      <span class="at">inputId =</span> <span class="st">"dataset"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6"></a>      <span class="at">choices =</span> <span class="fu">names</span>(<span class="fu">data</span>())</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    )</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="fu">observeEvent</span>(</span>
+<span id="cb6-10"><a href="#cb6-10"></a>      input<span class="sc">$</span>dataset,</span>
+<span id="cb6-11"><a href="#cb6-11"></a>      {</span>
+<span id="cb6-12"><a href="#cb6-12"></a>        <span class="fu">req</span>(input<span class="sc">$</span>dataset)</span>
+<span id="cb6-13"><a href="#cb6-13"></a>        <span class="fu">updateSelectInput</span>(</span>
+<span id="cb6-14"><a href="#cb6-14"></a>          <span class="at">inputId =</span> <span class="st">"variable"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>          <span class="at">choices =</span> <span class="fu">data</span>()[[input<span class="sc">$</span>dataset]] <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb6-16"><a href="#cb6-16"></a>        )</span>
+<span id="cb6-17"><a href="#cb6-17"></a>      }</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    )</span>
+<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-20"><a href="#cb6-20"></a>    result <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb6-21"><a href="#cb6-21"></a>      <span class="fu">req</span>(input<span class="sc">$</span>dataset)</span>
+<span id="cb6-22"><a href="#cb6-22"></a>      <span class="fu">req</span>(input<span class="sc">$</span>variable)</span>
+<span id="cb6-23"><a href="#cb6-23"></a>      <span class="fu">within</span>(</span>
+<span id="cb6-24"><a href="#cb6-24"></a>        <span class="fu">data</span>(),</span>
+<span id="cb6-25"><a href="#cb6-25"></a>        {</span>
+<span id="cb6-26"><a href="#cb6-26"></a>          my_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(input_dataset, <span class="fu">aes</span>(<span class="at">x =</span> input_var)) <span class="sc">+</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a>            <span class="fu">geom_histogram</span>()</span>
+<span id="cb6-28"><a href="#cb6-28"></a>          my_plot</span>
+<span id="cb6-29"><a href="#cb6-29"></a>        },</span>
+<span id="cb6-30"><a href="#cb6-30"></a>        <span class="at">input_dataset =</span> <span class="fu">as.name</span>(input<span class="sc">$</span>dataset),</span>
+<span id="cb6-31"><a href="#cb6-31"></a>        <span class="at">input_var =</span> <span class="fu">as.name</span>(input<span class="sc">$</span>variable)</span>
+<span id="cb6-32"><a href="#cb6-32"></a>      )</span>
+<span id="cb6-33"><a href="#cb6-33"></a>    })</span>
+<span id="cb6-34"><a href="#cb6-34"></a></span>
+<span id="cb6-35"><a href="#cb6-35"></a>    output<span class="sc">$</span>plot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb6-36"><a href="#cb6-36"></a>      <span class="fu">result</span>()[[<span class="st">"my_plot"</span>]]</span>
+<span id="cb6-37"><a href="#cb6-37"></a>    })</span>
+<span id="cb6-38"><a href="#cb6-38"></a></span>
+<span id="cb6-39"><a href="#cb6-39"></a>  })</span>
+<span id="cb6-40"><a href="#cb6-40"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div></li>
 </ul>
 </section>
 <section id="exercise-bonus" class="level3">
