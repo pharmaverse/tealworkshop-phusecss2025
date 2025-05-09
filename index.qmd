@@ -13,6 +13,12 @@ Welcome to the `teal` workshop on PHUSE CSS.
 
 [`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/) - Provides teal modules for the standard clinical trials outputs
 
+## Environment
+
+This workshop will be run entirely in the Shinylive service. Please read an introductionary article [here](./shinylive.qmd). Alternatively one can use [Posit Cloud](https://posit.cloud/spaces/340990) (requires regestration) or run locally (requires installing the packages).
+
+The code is available on [GitHub](https://github.com/pharmaverse/tealworkshop-phusecss2025).
+
 ## Further reads:
 
 * [Getting started with `teal`](https://insightsengineering.github.io/teal/latest-tag/articles/getting-started-with-teal.html)
