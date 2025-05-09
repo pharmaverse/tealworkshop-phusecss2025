@@ -21,7 +21,7 @@ website:
         text: Exercise 5
     right:
       - icon: github
-        href: https://github.com/
+        href: https://github.com/pharmaverse/tealworkshop-phusecss2025
         aria-label: GitHub
 
 format:
@@ -31,6 +31,3 @@ format:
       - brand
     css: styles.css
     toc: true
-
-
-
