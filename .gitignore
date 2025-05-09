@@ -1,3 +1,8 @@
 /.quarto/
 /_site/
 teal_app.lock
+.Rhistory
+.Rproj.user
+teal_worhshop_phusecss2025.Rcheck/
+teal_worhshop_phusecss2025*.tar.gz
+teal_worhshop_phusecss2025*.tgz
