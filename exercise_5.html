@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.34">
+<meta name="generator" content="quarto-1.8.24">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -67,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d68be38d83eca2bb035acf846ffba811.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1713c1db1ad41a796903378fc9ac7b2b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -114,6 +115,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">teal-workshop-phuse-css-2025</span>
     </a>
@@ -212,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="code">Code</h3>
 <p>Consider a following custom module:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(teal)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(teal)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(teal.widgets) <span class="co"># optional extension for UI convinience functions</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(teal.reporter)</span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(dplyr)</span>
@@ -326,11 +329,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-112"><a href="#cb1-112"></a>    <span class="at">ui_args =</span> <span class="fu">list</span>(<span class="at">decorators =</span> decorators),</span>
 <span id="cb1-113"><a href="#cb1-113"></a>    <span class="at">server_args =</span> <span class="fu">list</span>(<span class="at">decorators =</span> decorators)</span>
 <span id="cb1-114"><a href="#cb1-114"></a>  )</span>
-<span id="cb1-115"><a href="#cb1-115"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-115"><a href="#cb1-115"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Static (no inputs) decorator:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>static_decorator <span class="ot">&lt;-</span> <span class="fu">teal_transform_module</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>static_decorator <span class="ot">&lt;-</span> <span class="fu">teal_transform_module</span>(</span>
 <span id="cb2-2"><a href="#cb2-2"></a>  <span class="at">label =</span> <span class="st">"Static decorator"</span>,</span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="at">server =</span> <span class="cf">function</span>(id, data) {</span>
 <span id="cb2-4"><a href="#cb2-4"></a>    <span class="fu">moduleServer</span>(id, <span class="cf">function</span>(input, output, session) {</span>
@@ -343,11 +346,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-11"><a href="#cb2-11"></a>      })</span>
 <span id="cb2-12"><a href="#cb2-12"></a>    })</span>
 <span id="cb2-13"><a href="#cb2-13"></a>  }</span>
-<span id="cb2-14"><a href="#cb2-14"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-14"><a href="#cb2-14"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Interactive decorator:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>interactive_decorator <span class="ot">&lt;-</span> <span class="fu">teal_transform_module</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>interactive_decorator <span class="ot">&lt;-</span> <span class="fu">teal_transform_module</span>(</span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="at">label =</span> <span class="st">"Interactive decorator"</span>,</span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="at">ui =</span> <span class="cf">function</span>(id) {</span>
 <span id="cb3-4"><a href="#cb3-4"></a>    ns <span class="ot">&lt;-</span> <span class="fu">NS</span>(id)</span>
@@ -370,11 +373,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-21"><a href="#cb3-21"></a>      })</span>
 <span id="cb3-22"><a href="#cb3-22"></a>    })</span>
 <span id="cb3-23"><a href="#cb3-23"></a>  }</span>
-<span id="cb3-24"><a href="#cb3-24"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-24"><a href="#cb3-24"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Application:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>data <span class="ot">&lt;-</span> <span class="fu">teal_data</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>data <span class="ot">&lt;-</span> <span class="fu">teal_data</span>()</span>
 <span id="cb4-2"><a href="#cb4-2"></a>data <span class="ot">&lt;-</span> <span class="fu">within</span>(data, {</span>
 <span id="cb4-3"><a href="#cb4-3"></a>  ADSL <span class="ot">&lt;-</span> rADSL</span>
 <span id="cb4-4"><a href="#cb4-4"></a>})</span>
@@ -390,7 +393,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-14"><a href="#cb4-14"></a></span>
 <span id="cb4-15"><a href="#cb4-15"></a><span class="cf">if</span> (<span class="fu">Sys.getenv</span>(<span class="st">"QUARTO_ROOT"</span>) <span class="sc">==</span> <span class="st">""</span>) {</span>
 <span id="cb4-16"><a href="#cb4-16"></a>  <span class="fu">shinyApp</span>(app<span class="sc">$</span>ui, app<span class="sc">$</span>server)</span>
-<span id="cb4-17"><a href="#cb4-17"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-17"><a href="#cb4-17"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="app" class="level3">
@@ -405,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Create a decorator for the following application using <code>teal.modules.general::tm_g_scatterplot()</code>.</p>
 <p>Please note that the final object name is <code>plot</code> - see the documentation <a href="https://insightsengineering.github.io/teal.modules.general/latest-tag/reference/tm_g_scatterplot.html#decorating-module">here</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(teal.modules.general)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(teal.modules.general)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>data <span class="ot">&lt;-</span> <span class="fu">teal_data</span>() <span class="sc">|&gt;</span> <span class="fu">within</span>(ADSL <span class="ot">&lt;-</span> rADSL)</span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
 <span id="cb5-4"><a href="#cb5-4"></a>app <span class="ot">&lt;-</span> <span class="fu">init</span>(</span>
@@ -436,23 +439,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-29"><a href="#cb5-29"></a></span>
 <span id="cb5-30"><a href="#cb5-30"></a><span class="cf">if</span> (<span class="fu">Sys.getenv</span>(<span class="st">"QUARTO_ROOT"</span>) <span class="sc">==</span> <span class="st">""</span>) {</span>
 <span id="cb5-31"><a href="#cb5-31"></a>  <span class="fu">shinyApp</span>(app<span class="sc">$</span>ui, app<span class="sc">$</span>server)</span>
-<span id="cb5-32"><a href="#cb5-32"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-32"><a href="#cb5-32"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><a href="https://shinylive.io/r/editor/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMAcwpxm1AJQAdCPyikoAAgA8AWnVdqAfRVr2c9QB8AfOoDutUgAtaEdgEEAIgGUAMlt2MPH0UIJTRUP3Vne3YldXVjDQBeeNUoXFj1PiERUXVkulFSGIg4uNIYAwkDUQJVckZUaiIijNL1AA88lLUDOHbSZgJSatQ4AmK2toToeC6FMEDvefSSybjROBEhro2t4dFR8da19Wooek25sE9NsdJ1ADcWWnORRGXjtYIHIloCMS6T0YL3oIgM31+-1E7ASwGA80W8wAukjcOoEQBxACi8zkKxOpV2dzg-Curmx80+pWCazxVNYXQSvX6g32hwmJ2msDgZK8SzwVPWt22ySJQxGYw5BLOF2oVxue0ez1ecHeAtWBIhfwBySBILBWqhMNScIRfORqPRYAAQgBZLAAaSwAEZcfiCeoxeRScl5nbHS7KRrJjSQ+62gBidS2gS0ABmDIcMjgAEIqfwxkRmKQs7l8rRCqZjqHgsElPH1OxPKxxFJyBAHjEwABFACqriwABUAPIGLDd7ud3F5X1gYcgDKiJwQViudDsMIAEkEtDRS42jAeMmCAF8wDukUA">Open editor in Shinylive</a></p>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Answer
+<span class="screen-reader-only">Tip</span>Answer
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>decorators <span class="ot">=</span> <span class="fu">list</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>decorators <span class="ot">=</span> <span class="fu">list</span>(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">plot =</span> <span class="fu">teal_transform_module</span>(</span>
 <span id="cb6-3"><a href="#cb6-3"></a>    <span class="at">label =</span> <span class="st">"Custom decorations"</span>,</span>
 <span id="cb6-4"><a href="#cb6-4"></a>    <span class="at">ui =</span> <span class="cf">function</span>(id) {</span>
@@ -477,7 +480,7 @@ Answer
 <span id="cb6-23"><a href="#cb6-23"></a>      })</span>
 <span id="cb6-24"><a href="#cb6-24"></a>    }</span>
 <span id="cb6-25"><a href="#cb6-25"></a>  )</span>
-<span id="cb6-26"><a href="#cb6-26"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-26"><a href="#cb6-26"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -538,13 +541,14 @@ Answer
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
